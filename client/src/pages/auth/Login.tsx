@@ -61,7 +61,7 @@ const Login = () => {
   return (
     <section className="w-full flex justify-center py-20 sm:py-10">
       <div className="w-[450px]">
-        <h3 className="text-2xl font-bold">Welcome Back!</h3>
+        <h3 className="text-2xl sm:text-[16px] font-bold">Welcome Back!</h3>
         <p className="text-sm font-medium mt-3 mb-10">
           Sign in below to access your workspace and continue your projects.
           Let's pick up where you left off!

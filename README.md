@@ -53,5 +53,6 @@ you need to run nvm install 20.12.2 to install this node version
     7. npm i --save class-validator class-transformer
     8. npm i --save ejs 
     9. npm i --save nodemailer
+    10.  npm i --save @nestjs/throttler (rate limiting)
 
     Build command : npm run build

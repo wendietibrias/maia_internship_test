@@ -1,10 +1,12 @@
-import { Body, Controller,Post,Get, Query, NotFoundException } from "@nestjs/common";
+import { Body, Controller,Post,Get, Query, NotFoundException, UseGuards } from "@nestjs/common";
 import { Version } from "@nestjs/common";
 import { FindExistAccountDTO, LoginDTO, RegisterDTO } from "./auth.dto";
 import { AuthService } from "./auth.service";
 import { ApiTags } from "@nestjs/swagger";
+import { ThrottlerGuard } from "@nestjs/throttler";
 
 @ApiTags("AUTH")
+@UseGuards(ThrottlerGuard)
 @Controller('api/auth')
 export class AuthController{
     constructor(

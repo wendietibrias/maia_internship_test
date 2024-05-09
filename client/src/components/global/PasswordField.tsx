@@ -25,13 +25,26 @@ const PasswordField = ({
       <input
         {...register("password", {
           required: `${placeholder} is required`,
-          // validate: {
-          //   minLength: (value: string) => value.trim().length === 8,
-          //   containLowerAndUpper: (value: string) =>
-          //     value.match(/[A-Z]/g) && value.match(/[a-z]/g),
-          //   containNumber: (value: string) => value.match(/[0-9]/g),
-          //   containSymbol: (value: string) => value.match(/[#?!@$%^&*-]/g),
-          // },
+          minLength:{
+            value:8,
+            message:"Password at least include 8 characters"
+          },
+          validate: (value:string) => {
+              if(value.trim().length < 8) {
+                 return false;
+              }
+              if(!value.match(/(?=.*[a-z])/) && !value.match(/(?=.*[A-Z])/)){
+                return false;
+              }
+              if(!value.match(/[0-9]/g)){
+                return false;
+              }
+              if(!value.match(/[#?!@$%^&*-]/g)){
+                return false;
+              }
+
+              return true;
+          },
           onChange: (e: any) => {
             if (setPassword) {
               setPassword(e.target.value);

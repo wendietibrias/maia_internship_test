@@ -6,6 +6,7 @@ import { JWTModule } from './providers/jwt/jwt.module';
 import { MailModule } from './providers/mailer/mailer.module';
 import configs from './common/configs';
 import { EmailModule } from './modules/email/email.module';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
@@ -13,6 +14,12 @@ import { EmailModule } from './modules/email/email.module';
       isGlobal:true,
       load: configs
     }),
+    ThrottlerModule.forRoot([
+      {
+         ttl:60000,
+         limit:10
+      }
+    ]),
     JWTModule,
     DatabaseModule,
     MailModule,

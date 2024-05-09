@@ -4,6 +4,7 @@ import {
   AsyncInput,
   Alert,
   PasswordField,
+  LoadingSpinner,
 } from "../../components";
 import useAuth, { useAuthType } from "../../hooks/auth.hook";
 import useAlert, { useAlertType } from "../../hooks/alert.hook";
@@ -13,6 +14,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useMutation } from "react-query";
 import { IRegisterField } from "../../interfaces/auth.interface";
 import { registerService } from "../../services/auth.service";
+import { resendVerification } from "../../services/email.service";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -21,12 +23,13 @@ const Register = () => {
 
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
   const [watchPassword, setWatchPassword] = useState<string>("");
-  const [userMail,setUserMail] = useState<string>("");
+  const [userMail, setUserMail] = useState<string>("");
 
   const {
     register,
     handleSubmit,
     formState: { errors },
+    getValues,
   } = useForm<IRegisterField>({
     defaultValues: {
       name: "",
@@ -38,6 +41,11 @@ const Register = () => {
   const registerMutation = useMutation({
     mutationFn: registerService,
     mutationKey: "register request",
+  });
+
+  const resendEmailMutation = useMutation({
+    mutationFn: resendVerification,
+    mutationKey: "resend verification request",
   });
 
   const submitHandler: SubmitHandler<IRegisterField> = async (formData) => {
@@ -57,6 +65,22 @@ const Register = () => {
     }
   };
 
+  const resendEmailHandler = async () => {
+    try {
+      const { status } = await resendEmailMutation.mutateAsync(
+        getValues("email")
+      );
+      if (status === "success") {
+         openAlert("Success resend verification");
+      }
+    } catch (err:any) {
+        const { response:{data} } = err;
+        openAlert(data.message);
+    } finally {
+       setTimeout(()=>closeAlert(),4000);
+    }
+  };
+
   useEffect(() => {
     if (token) {
       navigate("/");
@@ -71,14 +95,25 @@ const Register = () => {
     <section className="w-full flex justify-center py-20 sm:py-10">
       {isSuccess ? (
         <div className="w-[450px]">
-          <h3 className="text-xl font-bold">
+          <h3 className="text-xl sm:text-[16px] font-bold">
             Verify Email Address to Get Started
           </h3>
+          {isShow && <Alert/>}
           <div className="w-full bg-white p-4 rounded-md mt-5">
             <p className="text-sm text-secondary">
-            A confirmation link has been sent to your email address <span className="font-bold text-secondary">{userMail}</span>. Click the link to verify your account and unlock full access. 
+              A confirmation link has been sent to your email address{" "}
+              <span className="font-bold text-secondary">{userMail}</span>.
+              Click the link to verify your account and unlock full access.
             </p>
           </div>
+
+          <button
+            onClick={() => resendEmailHandler()}
+            disabled={resendEmailMutation.isLoading}
+            className="w-full bg-primary text-white py-2 rounded-md mt-7 text-sm font-semibold"
+          >
+            {resendEmailMutation.isLoading ? <LoadingSpinner/> : "Resend Verification"}
+          </button>
         </div>
       ) : (
         <div className="w-[450px]">
