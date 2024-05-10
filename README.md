@@ -56,3 +56,7 @@ you need to run nvm install 20.12.2 to install this node version
     10.  npm i --save @nestjs/throttler (rate limiting)
 
     Build command : npm run build
+
+    run project : npm run start:dev
+
+    api docs url : http://localhost:8080/docs
